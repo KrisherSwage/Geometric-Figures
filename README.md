@@ -5,6 +5,7 @@ ____
 периметр и площадь треугольника
 ____
 ![Скриншот программы 1](https://user-images.githubusercontent.com/89964564/135134940-05f9567a-8a74-4e15-82f1-2a60a80e48ea.png)
+(https://user-images.githubusercontent.com/89964564/136842842-1f9a5485-4b74-4f54-b929-60cd5b35ffbf.png)
 ____
 Проект разрабатывался в Microsoft Visual Studio, 
 открывать следует файл Program.cs,
