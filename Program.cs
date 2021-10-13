@@ -6,8 +6,9 @@ namespace Points
     {
         public class Point //класс точки
         {
-            public int x, y, R;
-            public int InX() //метод получения координаты x 
+            public double x, y, R;
+            // R- что такое?
+            public void InX() //метод получения координаты x 
             {
                 while (true) //цикл проверки на ввод
                 {
@@ -18,10 +19,10 @@ namespace Points
                         break;
                     }
                 }
-                return (x);
+                
             }
 
-            public int InY() //метод получения координаты y
+            public void InY() //метод получения координаты y
             {
                 while (true) //цикл проверки на ввод
                 {
@@ -32,22 +33,42 @@ namespace Points
                         break;
                     }
                 }
-                return (y);
+               
             }
-
+            public void InPoint() // метод ввода точки
+            {
+                InX();
+                InY();
+            }
+            public void SetPoint(double x, double y) // метод заполнения точки
+            {
+                this.x=x;
+                this.y=y;
+            }
+           public void print() // метод печати точки
+            {
+                 Console.WriteLine($"Координаты точки ({x}; {y})");
+            }
+            public double dist(Point B) //рассчет расстояния
+            {
+                return (Math.Sqrt(Math.Pow(x - B.x, 2) + Math.Pow(this.y - B.y, 2)));
+            }
+                
             
         }
 
         class Triangle //класс треугольника
         {
-            double[] MasA = new double[2]; //массив координат точки A
+            /*double[] MasA = new double[2]; //массив координат точки A
             double[] MasB = new double[2]; //массив координат точки B
             double[] MasC = new double[2]; //массив координат точки C
+            */
+            public Point A,B,C; // точки треугольника
 
             public void FirstLit(double x, double y) //метод получения координат точки A
             {
-                MasA[0] = x;
-                MasA[1] = y;
+                A.x = x;
+                A.y = y;
             }
             public void SecondLit(double x, double y) //метод получения координат точки B
             {
@@ -64,11 +85,11 @@ namespace Points
 
             public void Ex()
             {
-                Console.WriteLine($"Координаты точки A ({MasA[0]}; {MasA[1]})");
+                A.print();
                 Console.WriteLine($"Координаты точки B ({MasB[0]}, {MasB[1]})");
                 Console.WriteLine($"Координаты точки C ({MasC[0]}, {MasC[1]})");
 
-                side1 = Math.Sqrt(Math.Pow(MasA[0] - MasB[0], 2) + Math.Pow(MasA[1] - MasB[1], 2)); //расчет длин сторон
+                side1 = A.dist(B); //расчет длин сторон
                 side2 = Math.Sqrt(Math.Pow(MasB[0] - MasC[0], 2) + Math.Pow(MasB[1] - MasC[1], 2));
                 side3 = Math.Sqrt(Math.Pow(MasC[0] - MasA[0], 2) + Math.Pow(MasC[1] - MasA[1], 2));
 
@@ -82,6 +103,17 @@ namespace Points
 
                 Console.WriteLine($"Площадь треугольника равна {round}");
             }
+             public void In()
+             {
+                  Console.WriteLine("Введите координаты первой точки треугольника");
+                  triangle.A.InPoint(); //вызов метода получения координат точки A
+                  Console.WriteLine("Введите координаты второй точки треугольника");
+                  //      triangle.SecondLit(point.InX(), point.InY()); //вызов метода получения координат точки B
+                   Console.WriteLine("Введите координаты третьей точки треугольника");
+                   //     triangle.ThirdLit(point.InX(), point.InY()); //вызов метода получения координат точки C
+                 triangle.Ex(); //метод, высчитывающий геометрию треугольника
+             }
+            
         }
 
         class Tetragon //класс четырехугольника
@@ -208,14 +240,7 @@ namespace Points
                 switch (getInput)
                 {
                     case 1:
-                        Console.WriteLine("Введите координаты первой точки треугольника");
-                        triangle.FirstLit(point.InX(), point.InY()); //вызов метода получения координат точки A
-                        Console.WriteLine("Введите координаты второй точки треугольника");
-                        triangle.SecondLit(point.InX(), point.InY()); //вызов метода получения координат точки B
-                        Console.WriteLine("Введите координаты третьей точки треугольника");
-                        triangle.ThirdLit(point.InX(), point.InY()); //вызов метода получения координат точки C
-
-                        triangle.Ex(); //метод, высчитывающий геометрию треугольника
+                       triangle.In();
                         break;
 
                     case 2:
