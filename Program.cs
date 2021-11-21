@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Points
 {
@@ -6,7 +8,7 @@ namespace Points
     {
         public class Point //класс точки
         {
-            public int x, y, R;
+            public int x, y;
             public int InX() //метод получения координаты x 
             {
                 while (true) //цикл проверки на ввод
@@ -38,12 +40,12 @@ namespace Points
             
         }
 
-        class Triangle //класс треугольника
+        public class Triangle //класс треугольника
         {
-            double[] MasA = new double[2]; //массив координат точки A
-            double[] MasB = new double[2]; //массив координат точки B
-            double[] MasC = new double[2]; //массив координат точки C
-
+            public static double[] MasA = new double[2]; //массив координат точки A
+            public static double[] MasB = new double[2]; //массив координат точки B
+            public static double[] MasC = new double[2]; //массив координат точки C
+            public Point A, B, C;
             public void FirstLit(double x, double y) //метод получения координат точки A
             {
                 MasA[0] = x;
@@ -60,7 +62,7 @@ namespace Points
                 MasC[1] = y;
             }
 
-            double side1, side2, side3, per, area, per05; //переменные для геометрии
+            public static double side1, side2, side3, per, area, per05; //переменные для геометрии
 
             public void Ex()
             {
@@ -86,10 +88,10 @@ namespace Points
 
         class Tetragon //класс четырехугольника
         {
-            double[] MasA = new double[2]; //массив координат точки A
-            double[] MasB = new double[2]; //массив координат точки B
-            double[] MasC = new double[2]; //массив координат точки C
-            double[] MasD = new double[2]; //массив координат точки D
+            public static double[] MasA = new double[2]; //массив координат точки A
+            public static double[] MasB = new double[2]; //массив координат точки B
+            public static double[] MasC = new double[2]; //массив координат точки C
+            public static double[] MasD = new double[2]; //массив координат точки D
 
             public void FirstLit(double x, double y) //метод получения координат точки A
             {
@@ -112,7 +114,7 @@ namespace Points
                 MasD[1] = y;
             }
 
-            double side1, side2, side3, side4, perimetr, area, diagonal; //переменные для геометрии
+            public static double side1, side2, side3, side4, perimetr, area, diagonal; //переменные для геометрии
 
             public void ExTetr()
             {
@@ -147,7 +149,7 @@ namespace Points
 
         class Circle //класс круга
         {
-            double[] MasA = new double[2]; //массив координат центра
+            public static double[] MasA = new double[2]; //массив координат центра
 
             public void FirstLit(double x, double y) //метод получения координат центра
             {
@@ -155,7 +157,7 @@ namespace Points
                 MasA[1] = y;
             }
 
-            double radius, perimetr, area; //переменные для геометрии
+            public static double radius, perimetr, area; //переменные для геометрии
 
             public void ExCirc()
             {
@@ -182,6 +184,8 @@ namespace Points
             }
         }
 
+
+
         static void Main(string[] args)
         {
             var point = new Point(); //экземпляр класса точки
@@ -189,10 +193,15 @@ namespace Points
             var tetragon = new Tetragon();
             var circle = new Circle();
 
-            bool flag = true;
+            //ArrayList nameFigrs = new ArrayList(); //коллекция для сортировки фигур
+            List<string> nameFigrs = new List<string>();
+            //ArrayList pers = new ArrayList();
+            //ArrayList ars = new ArrayList(); //коллекция для сортировки фигур по площади
+            List<double> ars = new List<double>();
+            int cout = 0;
 
             int getInput;
-
+            bool flag = true;
             while (flag)
             {
                 while (true) //цикл проверки на ввод
@@ -216,6 +225,12 @@ namespace Points
                         triangle.ThirdLit(point.InX(), point.InY()); //вызов метода получения координат точки C
 
                         triangle.Ex(); //метод, высчитывающий геометрию треугольника
+
+                        nameFigrs.Add($"Треугольник. А({Triangle.MasA[0]};{Triangle.MasA[1]}), В({Triangle.MasB[0]};{Triangle.MasB[1]}), С({Triangle.MasC[0]};{Triangle.MasC[1]}). Периметр равен {Triangle.per}.");
+                        //pers.Add(Triangle.per);
+                        ars.Add(Triangle.area);
+                        cout++;
+
                         break;
 
                     case 2:
@@ -229,15 +244,59 @@ namespace Points
                         tetragon.FourthLit(point.InX(), point.InY()); //вызов метода получения координат точки D
 
                         tetragon.ExTetr(); //метод, высчитывающий геометрию четырехугольника
+
+                        nameFigrs.Add($"Четырехугольник. А({Tetragon.MasA[0]};{Tetragon.MasA[1]}), В({Tetragon.MasB[0]};{Tetragon.MasB[1]}), С({Tetragon.MasC[0]};{Tetragon.MasC[1]}),  ({Tetragon.MasD[0]};{Tetragon.MasD[1]}). Периметр равен {Tetragon.perimetr}.");
+                        //pers.Add(Tetragon.perimetr);
+                        ars.Add(Tetragon.area);
+                        cout++;
+
                         break;
 
                     case 3:
                         Console.WriteLine("Введите координаты центра круга");
                         circle.FirstLit(point.InX(), point.InY()); //вызов метода получения координат центра круга
                         circle.ExCirc(); //метод, высчитывающий геометрию круга
+
+                        nameFigrs.Add($"Круг. O({Circle.MasA[0]};{Circle.MasA[1]}, R=({Circle.radius})). Периметр равен {Circle.perimetr}.");
+                        //pers.Add(Circle.perimetr);
+                        ars.Add(Circle.area);
+                        cout++;
+
                         break;
 
                     case 0:
+
+                        //ArrayList nameFigrs = new ArrayList();                                     
+                        //ArrayList ars = new ArrayList();
+
+
+                        for (int i = 0; i < cout; i++)
+                        {
+                            //сорта по площади
+                            for(int j = 0; j < cout; j++)
+                            {
+                                if (cout < j + 1)
+                                {
+                                    if (ars[j] > ars[j + 1])
+                                    {
+                                        double zam1 = ars[j];
+                                        ars[j] = ars[j + 1];
+                                        ars[j + 1] = zam1;
+
+                                        string zam2 = nameFigrs[j];
+                                        nameFigrs[j] = nameFigrs[j + 1];
+                                        nameFigrs[j + 1] = zam2;
+
+                                    }
+                                }
+                            }
+                        }
+
+                        for(int i = 0; i < cout; i++)
+                        {
+                            Console.WriteLine($"{nameFigrs[i]}, Площадь равна {ars[i]}");
+                        }
+
                         flag = false;
                         Console.WriteLine("Вы вышли из программы");
                         break;
