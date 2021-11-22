@@ -282,7 +282,7 @@ namespace CorrectedDots
 
                 per = Math.Round(side1 + side2 + side3 + side4, 2); //периметр
 
-                diagonal = Math.Sqrt(Math.Pow(coords[0] - coords[4], 2) + Math.Pow(coords[1] - coords[5], 2)); //диагональ
+                diagonal = Math.Sqrt(Math.Pow(radFi[0] - radFi[4], 2) + Math.Pow(radFi[1] - radFi[5], 2)); //диагональ
 
                 double HalfperTri1, HalfperTri2; //полупериметры для формулы Герона
                 HalfperTri1 = (side1 + side2 + diagonal) / 2;
