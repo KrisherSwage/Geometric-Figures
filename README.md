@@ -6,7 +6,7 @@ ____
 На выбор предоставляется 4 вида системы отсчета
 ____
 
-![Скриншот программы 1](https://user-images.githubusercontent.com/89964564/142922944-15b17ac4-de63-48c9-9031-1a9aab6df460.png)
+![Скриншот программы 1](https://user-images.githubusercontent.com/89964564/146325900-117cde72-aea9-4262-8ec9-188d79b66c56.png)
 ____
 Проект разрабатывался в Microsoft Visual Studio, 
 открывать следует файл Program.cs,
