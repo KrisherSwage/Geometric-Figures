@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CorrectedDots
+namespace Geom
 {
     class Program
     {
@@ -25,10 +25,10 @@ namespace CorrectedDots
 
             public double InFi()
             {
-                while (true) //цикл проверки на ввод
+                while (true) //цикл проверки на ввод угла в полярных координатах
                 {
                     Console.WriteLine("Введите число");
-                    if (double.TryParse(Console.ReadLine(), out double b))
+                    if (int.TryParse(Console.ReadLine(), out int b))
                     {
                         fi = b;
                         break;
@@ -36,197 +36,292 @@ namespace CorrectedDots
                 }
                 return (fi);
             }
+
+            public static int raspr; //переменная ответственная за определение размерности пространства
+            public void Dimension()
+            {
+                while (true) //цикл проверки на ввод
+                {
+                    Console.WriteLine("Введите N. 1 для полярной, >1 для N-го пространства");
+                    if (int.TryParse(Console.ReadLine(), out int a))
+                    {
+                        raspr = a;
+                        break;
+                    }
+                }   
+            }
+            
         }
 
-        public class Figure: Point
+        public class Figure : Point
         {
-            public double Distance2D(double a, double b, double c, double d)
-            {
-                return (Math.Round(Math.Sqrt(Math.Pow(a - c, 2) + Math.Pow(b - d, 2)), 2));
-            }
-            public double Distance3D(double a, double b, double c, double d, double e, double f)
-            {
-                return (Math.Round(Math.Sqrt(Math.Pow(a - d, 2) + Math.Pow(b - e, 2) + Math.Pow(c - f, 2)), 2));
-            }
-            public double Distance4D(double a/*1*/, double b, double c, double d, double e/*5*/, double f, double g, double h)
-            {
-                return (Math.Round(Math.Sqrt(Math.Pow(a - e, 2) + Math.Pow(b - f, 2) + Math.Pow(c - g, 2) + Math.Pow(d - h, 2)), 2));
-            }
-
             public static List<string> nameFigrs = new List<string>(); //для сортировки 1
             public static List<double> ars = new List<double>(); //для сортировки 2
+            public static List<string> coordes = new List<string>(); //для сортировки 3
             public static int cout = 0; //счетчик для сортировки
-
-            public static List<double> coords = new List<double>(); //список последовательных координат точек .................................................................//был сменен тип с инта на дабл
-            public static List<double> radFi = new List<double>();
-
-            public void Zam(int a)
-            {
-                for (int i = 0; i < a; i++) //перевод из полярных координат в декартовы
-                {
-                    if (i % 2 != 0)
-                    {
-                        radFi.Add(coords[i - 1] * Math.Sin((coords[i] / 180D) * Math.PI));
-                    }
-                    else
-                    {
-                        radFi.Add(coords[i] * Math.Cos((coords[i + 1] / 180D) * Math.PI));
-                    }
-
-                }
-            }
-
-            public void Create() //метод заполнения списка координат -------------------------------------------------------------------------------------Использовать под циклом в мейне
-            {
-                coords.Add(InX());
-            }
-
-            public void CreatePol()
-            {
-                coords.Add(InFi());
-            }
-
-            public static void Clean(int j)
-            {
-                int i = j;
-                while (i >= 0) //обнуление координат
-                {
-                    coords.RemoveAt(i); 
-                    i--;
-                }
-            }
-            public static void CleanPol(int j)
-            {
-                int i = j;
-                while (i >= 0) //обнуление координат
-                {
-                    radFi.RemoveAt(i);
-                    i--;
-                }
-            }
         }
 
         public class Triangle : Figure //класс треугольника
         {
             public static double side1, side2, side3, per, area, per05; //переменные для геометрии
+            string nCoords = ""; //запись для вывода координат
 
-            public void Geometry2D() //метод вычисления геометрии треугольника в 2D, с последующим добавлением в массив
+            List<int> A = new List<int>(); //список координат точки А
+            List<int> B = new List<int>();
+            List<int> C = new List<int>();
+
+            List<double> Apol = new List<double>(); //список координат точки А в полярной системе
+            List<double> Bpol = new List<double>();
+            List<double> Cpol = new List<double>();
+
+            public void Geometry() //метод вычисления геометрии треугольника 
             {
-                
-                side1 = Distance2D(coords[0], coords[1], coords[2], coords[3]);
-                side2 = Distance2D(coords[2], coords[3], coords[4], coords[5]);
-                side3 = Distance2D(coords[4], coords[5], coords[0], coords[1]);
+                if (raspr == 1) //если полярная выбрана
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        A.Add(0);
+                        B.Add(0);
+                        C.Add(0);
 
-                per = Math.Round(side1 + side2 + side3,2); //периметр
-                per05 = per / 2; //полупериметр
-                area = Math.Round(Math.Sqrt(per05 * (per05 - side1) * (per05 - side2) * (per05 - side3)), 2); //формула Герона
-                
-                nameFigrs.Add($"Треугольник в 2D. А({coords[0]}; {coords[1]}), В({coords[2]}; {coords[3]}), С({coords[4]}; {coords[5]}). Периметр равен {per}.");
-                ars.Add(area);
-                cout++;
+                        Apol.Add(0);
+                        Bpol.Add(0);
+                        Cpol.Add(0);
+                    }
+                    Console.WriteLine("Введите радиус первой точки треугольника");
+                    A[0] = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Введите угол (в градусах) первой точки треугольника");
+                    A[1] = Convert.ToInt32(Console.ReadLine());
 
-                Clean(5);
-                
-            }
+                    Console.WriteLine("Введите радиус второй точки треугольника");
+                    B[0] = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Введите угол (в градусах) второй точки треугольника");
+                    B[1] = Convert.ToInt32(Console.ReadLine());
 
-            public void Geometry3D() //метод вычисления геометрии треугольника в 3D, с последующим добавлением в массив
-            {
-                side1 = Distance3D(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
-                side2 = Distance3D(coords[3], coords[4], coords[5], coords[6], coords[7], coords[8]);
-                side3 = Distance3D(coords[6], coords[7], coords[8], coords[0], coords[1], coords[2]);
+                    Console.WriteLine("Введите радиус третьей точки треугольника");
+                    C[0] = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Введите угол (в градусах) третьей точки треугольника");
+                    C[1] = Convert.ToInt32(Console.ReadLine());
 
-                per = Math.Round(side1 + side2 + side3,2); //периметр
-                per05 = per / 2; //полупериметр
-                area = Math.Round(Math.Sqrt(per05 * (per05 - side1) * (per05 - side2) * (per05 - side3)), 2); //формула Герона
+                    coordes.Add($"Координаты в полярной. A({A[0]};{A[1]}), B({B[0]};{B[1]}), C({C[0]};{C[1]})");
+                    
+                    Apol[0] = A[0] * Math.Cos((A[1] / 180D) * Math.PI); //пересчет координаты x из полярной
+                    Apol[1] = A[0] * Math.Sin((A[1] / 180D) * Math.PI); //y
+                                                                     
+                    Bpol[0] = B[0] * Math.Cos((B[1] / 180D) * Math.PI);
+                    Bpol[1] = B[0] * Math.Sin((B[1] / 180D) * Math.PI);
+                                                                   
+                    Cpol[0] = C[0] * Math.Cos((C[1] / 180D) * Math.PI);
+                    Cpol[1] = C[0] * Math.Sin((C[1] / 180D) * Math.PI);
 
-                nameFigrs.Add($"Треугольник в 3D. А({coords[0]}; {coords[1]}; {coords[2]}), В({coords[3]}; {coords[4]}; {coords[5]}), С({coords[6]}; {coords[7]}; {coords[8]}). Периметр равен {per}.");
-                ars.Add(area);
-                cout++;
+                    for (int i = 0; i < 2; i++) //2 т.к. две координаты в полярной
+                    {
+                        side1 += Math.Pow(Apol[i] - Bpol[i], 2);
+                        side2 += Math.Pow(Bpol[i] - Cpol[i], 2);
+                        side3 += Math.Pow(Cpol[i] - Apol[i], 2);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < raspr; i++)
+                    {
+                        A.Add(0);
+                        B.Add(0);
+                        C.Add(0);
+                    }
+                    
+                    Console.WriteLine("Введите координаты первой точки треугольника");
+                    nCoords += "A(";
+                    for (int i = 0; i < raspr; i++) //координаты первой точки
+                    {
+                        A[i] = Convert.ToInt32(Console.ReadLine());
+                        nCoords += $"{A[i]} ";
+                    }
+                    nCoords += "), ";
 
-                Clean(8);
-            }
+                    Console.WriteLine("Введите координаты второй точки треугольника");
+                    nCoords += "B(";
+                    for (int i = 0; i < raspr; i++)
+                    {
+                        B[i] = Convert.ToInt32(Console.ReadLine());
+                        nCoords += $"{B[i]} ";
+                    }
+                    nCoords += "), ";
 
-            public void Geometry4D() //метод вычисления геометрии треугольника в 4D, с последующим добавлением в массив
-            {
-                side1 = Distance4D(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5], coords[6], coords[7]);
-                side2 = Distance4D(coords[4], coords[5], coords[6], coords[7], coords[8], coords[9], coords[10], coords[11]);
-                side3 = Distance4D(coords[8], coords[9], coords[10], coords[11], coords[0], coords[1], coords[2], coords[3]);
+                    Console.WriteLine("Введите координаты третьей точки треугольника");
+                    nCoords += "C(";
+                    for (int i = 0; i < raspr; i++)
+                    {
+                        C[i] = Convert.ToInt32(Console.ReadLine());
+                        nCoords += $"{C[i]} ";
+                    }
+                    nCoords += ")";
+
+                    coordes.Add($"Координаты в декартовой. {nCoords}");
+
+                    for (int i = 0; i < raspr; i++) //расчет длин сторон независимо от N-мерности
+                    {
+                        side1 += Math.Pow(A[i] - B[i], 2);
+                        side2 += Math.Pow(B[i] - C[i], 2);
+                        side3 += Math.Pow(C[i] - A[i], 2);
+                    }
+                }
+
+                side1 = (Math.Round(Math.Sqrt(side1), 2));
+                side2 = (Math.Round(Math.Sqrt(side2), 2));
+                side3 = (Math.Round(Math.Sqrt(side3), 2));
 
                 per = Math.Round(side1 + side2 + side3, 2); //периметр
-                per05 = per / 2; //полупериметр
+                per05 = Math.Round(per / 2, 2); //полупериметр
+          
                 area = Math.Round(Math.Sqrt(per05 * (per05 - side1) * (per05 - side2) * (per05 - side3)), 2); //формула Герона
 
-                nameFigrs.Add($"Треугольник в 4D. А({coords[0]}; {coords[1]}; {coords[2]}; {coords[3]}), В({coords[4]}; {coords[5]}; {coords[6]}; {coords[7]}), С({coords[8]}; {coords[9]}; {coords[10]}; {coords[11]}). Периметр равен {per}.");
+                nameFigrs.Add($"Треугольник. Периметр равен {per}.");
                 ars.Add(area);
                 cout++;
-
-                Clean(11);
             }
+        }
 
-            public void GeometryPol()
-            {
-                Zam(6);
-
-                side1 = Distance2D(radFi[0], radFi[1], radFi[2], radFi[3]);
-                side2 = Distance2D(radFi[2], radFi[3], radFi[4], radFi[5]);
-                side3 = Distance2D(radFi[4], radFi[5], radFi[0], radFi[1]);
-
-                per = Math.Round(side1 + side2 + side3, 2); //периметр
-                per05 = per / 2; //полупериметр
-                area = Math.Round(Math.Sqrt(per05 * (per05 - side1) * (per05 - side2) * (per05 - side3)), 2); //формула Герона
-
-                nameFigrs.Add($"Треугольник в полярной 2D. А({coords[0]}; {coords[1]}), В({coords[2]}; {coords[3]}), С({coords[4]}; {coords[5]}). Периметр равен {per}.");
-                ars.Add(area);
-                cout++;
-
-                Clean(5);
-                CleanPol(5);
-            }
-
-        } //конец класса треугольник
-
-        public class Tetragon: Figure
+        public class Tetragon : Figure
         {
             public static double side1, side2, side3, side4, per, area, diagonal; //переменные для геометрии
+            string nCoords = "";
+            List<int> A = new List<int>();
+            List<int> B = new List<int>();
+            List<int> C = new List<int>();
+            List<int> D = new List<int>();
 
-            public void Geometry2D() //метод вычисления геометрии четырехугольника в 2D, с последующим добавлением в массив
+            List<double> Apol = new List<double>();
+            List<double> Bpol = new List<double>();
+            List<double> Cpol = new List<double>();
+            List<double> Dpol = new List<double>();
+
+            public void Geometry() //метод вычисления геометрии четырехугольника 
             {
-                side1 = Distance2D(coords[0], coords[1], coords[2], coords[3]);
-                side2 = Distance2D(coords[2], coords[3], coords[4], coords[5]);
-                side3 = Distance2D(coords[4], coords[5], coords[6], coords[7]);
-                side4 = Distance2D(coords[6], coords[7], coords[0], coords[1]);
+                if (raspr == 1)
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        A.Add(0);
+                        B.Add(0);
+                        C.Add(0);
+                        D.Add(0);
 
+                        Apol.Add(0);
+                        Bpol.Add(0);
+                        Cpol.Add(0);
+                        Dpol.Add(0);
+                    }
 
-                per = Math.Round(side1 + side2 + side3 + side4,2); //периметр
+                    Console.WriteLine("Введите радиус первой точки четырехугольника");
+                    A[0] = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Введите угол (в градусах) первой точки четырехугольника");
+                    A[1] = Convert.ToInt32(Console.ReadLine());
+
+                    Console.WriteLine("Введите радиус второй точки четырехугольника");
+                    B[0] = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Введите угол (в градусах) второй точки четырехугольника");
+                    B[1] = Convert.ToInt32(Console.ReadLine());
+
+                    Console.WriteLine("Введите радиус третьей точки четырехугольника");
+                    C[0] = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Введите угол (в градусах) третьей точки четырехугольника");
+                    C[1] = Convert.ToInt32(Console.ReadLine());
+
+                    Console.WriteLine("Введите радиус четвертой точки четырехугольника");
+                    D[0] = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Введите угол (в градусах) четвертой точки четырехугольника");
+                    D[1] = Convert.ToInt32(Console.ReadLine());
+
+                    coordes.Add($"Координаты в полярной. A({A[0]};{A[1]}), B({B[0]};{B[1]}), C({C[0]};{C[1]}), D({D[0]};{D[1]})");
+           
+                    Apol[0] = (A[0] * Math.Cos((A[1] / 180D) * Math.PI)); //x 
+                    Apol[1] = (A[0] * Math.Sin((A[1] / 180D) * Math.PI)); //y
+                     
+                    Bpol[0] = (B[0] * Math.Cos((B[1] / 180D) * Math.PI));
+                    Bpol[1] = (B[0] * Math.Sin((B[1] / 180D) * Math.PI));
+                     
+                    Cpol[0] = (C[0] * Math.Cos((C[1] / 180D) * Math.PI));
+                    Cpol[1] = (C[0] * Math.Sin((C[1] / 180D) * Math.PI));
+                     
+                    Dpol[0] = (D[0] * Math.Cos((D[1] / 180D) * Math.PI));
+                    Dpol[1] = (D[0] * Math.Sin((D[1] / 180D) * Math.PI));
+
+                    for (int i = 0; i < 2; i++)
+                    {
+                        side1 += Math.Pow(A[i] - B[i], 2);
+                        side2 += Math.Pow(B[i] - C[i], 2);
+                        side3 += Math.Pow(C[i] - D[i], 2);
+                        side4 += Math.Pow(D[i] - A[i], 2);
+                        diagonal += Math.Pow(A[i] - C[i], 2);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < raspr; i++)
+                    {
+                        A.Add(0);
+                        B.Add(0);
+                        C.Add(0);
+                        D.Add(0);
+                    }
+
+                    Console.WriteLine("Введите координаты первой точки четырехугольника");
+                    nCoords += "A(";
+                    for (int i = 0; i < raspr; i++) //координаты первой точки
+                    {
+                        A[i] = Convert.ToInt32(Console.ReadLine());
+                        nCoords += $"{A[i]} ";
+                    }
+                    nCoords += "), ";
+
+                    Console.WriteLine("Введите координаты второй точки четырехугольника");
+                    nCoords += "B(";
+                    for (int i = 0; i < raspr; i++)
+                    {
+                        B[i] = Convert.ToInt32(Console.ReadLine());
+                        nCoords += $"{B[i]} ";
+                    }
+                    nCoords += "), ";
+
+                    Console.WriteLine("Введите координаты третьей точки четырехугольника");
+                    nCoords += "C(";
+                    for (int i = 0; i < raspr; i++)
+                    {
+                        C[i] = Convert.ToInt32(Console.ReadLine());
+                        nCoords += $"{C[i]} ";
+                    }
+                    nCoords += "), ";
+
+                    Console.WriteLine("Введите координаты четвертой точки четырехугольника");
+                    nCoords += "D(";
+                    for (int i = 0; i < raspr; i++)
+                    {
+                        D[i] = Convert.ToInt32(Console.ReadLine());
+                        nCoords += $"{D[i]} ";
+                    }
+                    nCoords += ")";
+
+                    coordes.Add($"Координаты в декартовой. {nCoords}");
+
+                    for (int i = 0; i < raspr; i++)
+                    {
+                        side1 += Math.Pow(A[i] - B[i], 2);
+                        side2 += Math.Pow(B[i] - C[i], 2);
+                        side3 += Math.Pow(C[i] - D[i], 2);
+                        side4 += Math.Pow(D[i] - A[i], 2);
+                        diagonal += Math.Pow(A[i] - C[i], 2);
+                    }
+                }
                 
-                diagonal = Math.Sqrt(Math.Pow(coords[0] - coords[4], 2) + Math.Pow(coords[1] - coords[5], 2)); //диагональ
-
-                double HalfperTri1, HalfperTri2; //полупериметры для формулы Герона
-                HalfperTri1 = (side1 + side2 + diagonal) / 2;
-                HalfperTri2 = (side3 + side4 + diagonal) / 2;
-                
-                double tri1 = Math.Sqrt(HalfperTri1 * (HalfperTri1 - side1) * (HalfperTri1 - side2) * (HalfperTri1 - diagonal)); //составной треугольник 1 четырехугольника
-                double tri2 = Math.Sqrt(HalfperTri2 * (HalfperTri2 - diagonal) * (HalfperTri2 - side3) * (HalfperTri2 - side4)); //составной треугольник 2 четырехугольника
-
-                area = Math.Round(tri1 + tri2, 2); //площадь из суммы треугольников
-
-                nameFigrs.Add($"Четырехугольник в 2D. А({coords[0]}; {coords[1]}), В({coords[2]}; {coords[3]}), С({coords[4]}; {coords[5]}), D({coords[6]}; {coords[7]}). Периметр равен {per}.");
-                ars.Add(area);
-                cout++;
-
-                Clean(7);
-            }
-
-            public void Geometry3D() //метод вычисления геометрии четырехугольника в 3D, с последующим добавлением в массив
-            {
-                side1 = Distance3D(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);          
-                side2 = Distance3D(coords[3], coords[4], coords[5], coords[6], coords[7], coords[8]);
-                side3 = Distance3D(coords[6], coords[7], coords[8], coords[9], coords[10], coords[11]);
-                side4 = Distance3D(coords[9], coords[10], coords[11], coords[0], coords[1], coords[2]);
+                side1 = (Math.Round(Math.Sqrt(side1), 2));
+                side2 = (Math.Round(Math.Sqrt(side2), 2));
+                side3 = (Math.Round(Math.Sqrt(side3), 2));
+                side4 = (Math.Round(Math.Sqrt(side4), 2));
 
                 per = Math.Round(side1 + side2 + side3 + side4, 2); //периметр
 
-                diagonal = Math.Sqrt(Math.Pow(coords[0] - coords[6], 2) + Math.Pow(coords[1] - coords[7], 2) + (Math.Pow(coords[2] - coords[8], 2))); //диагональ
+                diagonal = Math.Sqrt(diagonal); //диагональ
 
                 double HalfperTri1, HalfperTri2; //полупериметры для формулы Герона
                 HalfperTri1 = (side1 + side2 + diagonal) / 2;
@@ -237,153 +332,87 @@ namespace CorrectedDots
 
                 area = Math.Round(tri1 + tri2, 2); //площадь из суммы треугольников
 
-                nameFigrs.Add($"Четырехугольник в 3D. А({coords[0]}; {coords[1]}; {coords[2]}), В({coords[3]}; {coords[4]}; {coords[5]}), С({coords[6]}; {coords[7]}; {coords[8]}), D({coords[9]}; {coords[10]}; {coords[11]}). Периметр равен {per}.");
+                nameFigrs.Add($"Четырехугольник. Периметр равен {per}.");
                 ars.Add(area);
                 cout++;
 
-                Clean(11);
             }
-
-            public void Geometry4D() //метод вычисления геометрии треугольника в 4D, с последующим добавлением в массив
-            {
-                side1 = Distance4D(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5], coords[6], coords[7]);
-                side2 = Distance4D(coords[4], coords[5], coords[6], coords[7], coords[8], coords[9], coords[10], coords[11]);
-                side3 = Distance4D(coords[8], coords[9], coords[10], coords[11], coords[12], coords[13], coords[14], coords[15]);
-                side4 = Distance4D(coords[12], coords[13], coords[14], coords[15], coords[0], coords[1], coords[2], coords[3]);
-
-                per = Math.Round(side1 + side2 + side3 + side4, 2); //периметр
-
-                diagonal = Math.Sqrt(Math.Pow(coords[0] - coords[8], 2) + Math.Pow(coords[1] - coords[9], 2) + (Math.Pow(coords[2] - coords[10], 2) + (Math.Pow(coords[3] - coords[11], 2)))); //диагональ
-
-                double HalfperTri1, HalfperTri2; //полупериметры для формулы Герона
-                HalfperTri1 = (side1 + side2 + diagonal) / 2;
-                HalfperTri2 = (side3 + side4 + diagonal) / 2;
-
-                double tri1 = Math.Sqrt(HalfperTri1 * (HalfperTri1 - side1) * (HalfperTri1 - side2) * (HalfperTri1 - diagonal)); //составной треугольник 1 четырехугольника
-                double tri2 = Math.Sqrt(HalfperTri2 * (HalfperTri2 - diagonal) * (HalfperTri2 - side3) * (HalfperTri2 - side4)); //составной треугольник 2 четырехугольника
-
-                area = Math.Round(tri1 + tri2, 2); //площадь из суммы треугольников
-
-                nameFigrs.Add($"Четырехугольник в 4D. А({coords[0]}; {coords[1]}; {coords[2]}; {coords[3]}), В({coords[4]}; {coords[5]}; {coords[6]}; {coords[7]}), С({coords[8]}; {coords[9]}; {coords[10]}; {coords[11]}), D({coords[12]}; {coords[13]}; {coords[14]}; {coords[15]}). Периметр равен {per}.");
-                ars.Add(area);
-                cout++;
-
-                Clean(15);
-            }
-            public void GeometryPol()
-            {
-                Zam(8);
-
-                side1 = Distance2D(radFi[0], radFi[1], radFi[2], radFi[3]);
-                side2 = Distance2D(radFi[2], radFi[3], radFi[4], radFi[5]);
-                side3 = Distance2D(radFi[4], radFi[5], radFi[6], radFi[7]);
-                side4 = Distance2D(radFi[6], radFi[7], radFi[0], radFi[1]);
-
-
-                per = Math.Round(side1 + side2 + side3 + side4, 2); //периметр
-
-                diagonal = Math.Sqrt(Math.Pow(radFi[0] - radFi[4], 2) + Math.Pow(radFi[1] - radFi[5], 2)); //диагональ
-
-                double HalfperTri1, HalfperTri2; //полупериметры для формулы Герона
-                HalfperTri1 = (side1 + side2 + diagonal) / 2;
-                HalfperTri2 = (side3 + side4 + diagonal) / 2;
-
-                double tri1 = Math.Sqrt(HalfperTri1 * (HalfperTri1 - side1) * (HalfperTri1 - side2) * (HalfperTri1 - diagonal)); //составной треугольник 1 четырехугольника
-                double tri2 = Math.Sqrt(HalfperTri2 * (HalfperTri2 - diagonal) * (HalfperTri2 - side3) * (HalfperTri2 - side4)); //составной треугольник 2 четырехугольника
-
-                area = Math.Round(tri1 + tri2, 2); //площадь из суммы треугольников
-
-                nameFigrs.Add($"Четырехугольник в полярной 2D. А({coords[0]}; {coords[1]}), В({coords[2]}; {coords[3]}), С({coords[4]}; {coords[5]}), D({coords[6]}; {coords[7]}). Периметр равен {per}.");
-                ars.Add(area);
-                cout++;
-
-                Clean(7);
-                CleanPol(7);
-            }
-
         }//конец класса четырехугольник
 
         public class Circle : Figure
         {
             public static double per, area; //переменные для геометрии
             public static int radius;
-            public void Geometry2D() //метод вычисления геометрии четырехугольника в 2D, с последующим добавлением в массив
+            string nCoords = "";
+            List<int> A = new List<int>();
+            List<double> Apol = new List<double>();
+
+            public void Geometry() 
             {
-                Console.WriteLine("                    Введите радиус                    ");
-                radius = Math.Abs(InX());
+                if (raspr == 1)
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        A.Add(0);
+                        Apol.Add(0);
+                    }
 
-                per = Math.Round(Math.PI * 2 * radius,2); //периметр
+                    Console.WriteLine("Введите радиус точки круга");
+                    A[0] = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Введите угол (в градусах) точки круга");
+                    A[1] = Convert.ToInt32(Console.ReadLine());
 
-                area = Math.Round(radius * radius * Math.PI, 2); //площадь
+                    Apol[0] = Math.Round(A[0] * Math.Cos((A[1] / 180D) * Math.PI), 2); //x
+                    Apol[1] = Math.Round(A[0] * Math.Sin((A[1] / 180D) * Math.PI), 2); //y
 
-                nameFigrs.Add($"Круг в 2D. O({coords[0]}; {coords[1]}). Периметр равен {per}.");
-                ars.Add(area);
-                cout++;
+                    coordes.Add($"Координаты в полярной. O({A[0]};{A[1]}). Пересчитанные в декартову: O({Apol[0]};{Apol[1]})");
+                }
+                else
+                {
+                    for (int i = 0; i < raspr; i++)
+                    {
+                        A.Add(0);
+                    }
 
-                Clean(1);
-            }
+                    Console.WriteLine("Введите координаты точки круга");
+                    nCoords += "A(";
+                    for (int i = 0; i < raspr; i++) //координаты первой точки
+                    {
+                        A[i] = Convert.ToInt32(Console.ReadLine());
+                        nCoords += $"{A[i]} ";
+                    }
+                    nCoords += ")";
 
-            public void Geometry3D() //метод вычисления геометрии четырехугольника в 3D, с последующим добавлением в массив
-            {
-                Console.WriteLine("                    Введите радиус                    ");
-                radius = Math.Abs(InX());
+                    coordes.Add($"Координаты в декартовой. {nCoords}");
+                }
 
-                per = Math.Round(Math.PI * 2 * radius,2); //периметр
-
-                area = Math.Round(radius * radius * Math.PI, 2); //площадь
-
-                nameFigrs.Add($"Круг в 3D. O({coords[0]}; {coords[1]}; {coords[2]}). Периметр равен {per}.");
-                ars.Add(area);
-                cout++;
-
-                Clean(2);
-            }
-
-            public void Geometry4D()
-            {
-                Console.WriteLine("                    Введите радиус                    ");
-                radius = Math.Abs(InX());
-
-                per = Math.Round(Math.PI * 2 * radius, 2); //периметр
-
-                area = Math.Round(radius * radius * Math.PI, 2); //площадь
-
-                nameFigrs.Add($"Круг в 4D. O({coords[0]}; {coords[1]}; {coords[2]}; {coords[3]}). Периметр равен {per}.");
-                ars.Add(area);
-                cout++;
-
-                Clean(3);
-            }
-
-            public void GeometryPol()
-            {
-                Console.WriteLine("                    Введите радиус                    ");
+                Console.WriteLine("                    Введите радиус круга                    ");
                 radius = Math.Abs(InX());
 
                 per = Math.Round(Math.PI * 2 * radius, 2); //периметр
 
                 area = Math.Round(radius * radius * Math.PI, 2); //площадь
 
-                nameFigrs.Add($"Круг в полярных 2D. O({coords[0]}; {coords[1]}). Периметр равен {per}.");
+                nameFigrs.Add($"Круг. Периметр равен {per}.");
                 ars.Add(area);
                 cout++;
 
-                Clean(1);
             }
 
-        } //конец класса круг
+        }
 
         static void Main(string[] args)
         {
             
-            var figure = new Figure();
             var triangle = new Triangle(); //экземпляр класса треугольник
             var tetragon = new Tetragon();
             var circle = new Circle();
-
-            int getInput;
-            int sisCoor = 0;
+            var point = new Point();
+            int getInput;  
             bool flag = true;
+
+            point.Dimension(); //определение размерности пространства
+
             while (flag)
             {
                 while (true) //цикл проверки на ввод
@@ -395,224 +424,52 @@ namespace CorrectedDots
                         break;
                     }
                 }
-
-                if (getInput != 0)
-                {
-                    Console.WriteLine("Выберите систему отсчета: 1 - 2D; 2 - 3D; 3 - 4D; 4 - полярные 2D");
-                    while (true) //цикл проверки на ввод
-                    {
-                        if (int.TryParse(Console.ReadLine(), out int a) && ((a == 1) || (a == 2) || (a == 3) || (a == 4)))
-                        {
-                            sisCoor = a;
-                            break;
-                        }
-                    }
-                    Console.WriteLine("Ввод координат точек следует производить последовательно. То есть: сначала X1, Y1, Z1, далее X2, Y2, Z2 и так далее.");
-                }
-
-                
                 switch (getInput)
                 {
-                    case 1: //треугольник
-                        
-                        switch (sisCoor)
-                        {
-                            case 1: //2d
-                                Console.WriteLine("Координаты для треугольника в 2D");
-                                int i = 0;
-                                while (i < 6)
-                                {
-                                    figure.Create();
-                                    i++;
-                                }
-
-                                triangle.Geometry2D();
-                                Console.WriteLine("_________________Конец ввода и подсчета величин_________________");
-                                break;
-                            case 2: //3d
-                                Console.WriteLine("Координаты для треугольника в 3D");
-                                i = 0;
-                                while (i < 9)
-                                {
-                                    figure.Create();
-                                    i++;
-                                }
-
-                                triangle.Geometry3D();
-                                Console.WriteLine("_________________Конец ввода и подсчета величин_________________");
-                                break;
-                            case 3: //4d
-                                Console.WriteLine("Координаты для треугольника в 4D");
-                                i = 0;
-                                while (i < 12)
-                                {
-                                    figure.Create();
-                                    i++;
-                                }
-
-                                triangle.Geometry4D();
-                                Console.WriteLine("_________________Конец ввода и подсчета величин_________________");
-                                break;
-                            case 4:
-                                Console.WriteLine("Координаты для треугольника в полярных 2D. Сначала следует вводить радиус, затем угол в градусах, и так для каждой переменной");
-                                i = 0;
-                                while (i < 6)
-                                {
-                                    figure.CreatePol();
-                                    i++;
-                                }
-
-                                triangle.GeometryPol();
-                                Console.WriteLine("_________________Конец ввода и подсчета величин_________________");
-                                break;
-                            
-                        }
-
+                    case 1:
+                        triangle.Geometry();
                         break;
-
-                    case 2: //4уг
-
-                        switch (sisCoor)
-                        {
-                            case 1: //2d
-                                Console.WriteLine("Координаты для четырехугольника в 2D");
-                                int i = 0;
-                                while (i < 8)
-                                {
-                                    figure.Create();
-                                    i++;
-                                }
-
-                                tetragon.Geometry2D();
-                                Console.WriteLine("_________________Конец ввода и подсчета величин_________________");
-                                break;
-                            case 2:
-                                Console.WriteLine("Координаты для четырехугольника в 3D");
-                                i = 0;
-                                while (i < 12)
-                                {
-                                    figure.Create();
-                                    i++;
-                                }
-
-                                tetragon.Geometry3D();
-                                Console.WriteLine("_________________Конец ввода и подсчета величин_________________");
-                                break;
-                            case 3:
-                                Console.WriteLine("Координаты для четырехугольника в 4D");
-                                i = 0;
-                                while (i < 16)
-                                {
-                                    figure.Create();
-                                    i++;
-                                }
-
-                                tetragon.Geometry4D();
-                                Console.WriteLine("_________________Конец ввода и подсчета величин_________________");
-                                break;
-                            case 4:
-                                Console.WriteLine("Координаты для четырехугольника в 2D. Сначала следует вводить радиус, затем угол в градусах, и так для каждой переменной");
-                                i = 0;
-                                while (i < 8)
-                                {
-                                    figure.CreatePol();
-                                    i++;
-                                }
-
-                                tetragon.GeometryPol();
-                                Console.WriteLine("_________________Конец ввода и подсчета величин_________________");
-                                break;
-                        }
-
+                    case 2:
+                        tetragon.Geometry();
                         break;
-
-                    case 3: //круг
-
-                        switch (sisCoor)
-                        {
-                            case 1: //2d
-                                Console.WriteLine("Координаты для центра круга в 2D");
-                                int i = 0;
-                                while (i < 2)
-                                {
-                                    figure.Create();
-                                    i++;
-                                }
-
-                                circle.Geometry2D();
-                                Console.WriteLine("_________________Конец ввода и подсчета величин_________________");
-                                break;
-                            case 2: //3d
-                                Console.WriteLine("Координаты для центра круга в 3D");
-                                i = 0;
-                                while (i < 3)
-                                {
-                                    figure.Create();
-                                    i++;
-                                }
-
-                                circle.Geometry3D();
-                                Console.WriteLine("_________________Конец ввода и подсчета величин_________________");
-                                break;
-                            case 3:
-                                Console.WriteLine("Координаты для центра круга в 4D");
-                                i = 0;
-                                while (i < 4)
-                                {
-                                    figure.Create();
-                                    i++;
-                                }
-
-                                circle.Geometry4D();
-                                Console.WriteLine("_________________Конец ввода и подсчета величин_________________");
-                                break;
-                            case 4:
-                                Console.WriteLine("Координаты для центра круга в 2D. Сначала следует вводить радиус, затем угол в градусах, и так для каждой переменной");
-                                i = 0;
-                                while (i < 2)
-                                {
-                                    figure.CreatePol();
-                                    i++;
-                                }
-
-                                circle.GeometryPol();
-                                Console.WriteLine("_________________Конец ввода и подсчета величин_________________");
-                                break;
-
-                        }
-
+                    case 3:
+                        circle.Geometry();
                         break;
-
                     case 0:
 
                         for (int i = 0; i < Figure.cout; i++)
                         {
                             //сортировка по площади
-                            for (int j = 0; j < Figure.cout -1; j++)
+                            for (int j = 0; j < Figure.cout - 1; j++)
                             {
-                                 if (Figure.ars[j] > Figure.ars[j + 1])
-                                 {
-                                        double zam1 = Figure.ars[j];
-                                        Figure.ars[j] = Figure.ars[j + 1];
-                                        Figure.ars[j + 1] = zam1;
+                                if (Figure.ars[j] > Figure.ars[j + 1])
+                                {
+                                    double zam1 = Figure.ars[j];
+                                    Figure.ars[j] = Figure.ars[j + 1];
+                                    Figure.ars[j + 1] = zam1;
 
-                                        string zam2 = Figure.nameFigrs[j];
-                                        Figure.nameFigrs[j] = Figure.nameFigrs[j + 1];
-                                        Figure.nameFigrs[j + 1] = zam2;
-                                 }
+                                    string zam2 = Figure.nameFigrs[j];
+                                    Figure.nameFigrs[j] = Figure.nameFigrs[j + 1];
+                                    Figure.nameFigrs[j + 1] = zam2;
+
+                                    string zam3 = Figure.coordes[j];
+                                    Figure.coordes[j] = Figure.coordes[j + 1];
+                                    Figure.coordes[j + 1] = zam3;
+                                }
                             }
                         }
 
                         for (int i = 0; i < Figure.cout; i++)
                         {
                             Console.WriteLine($"{Figure.nameFigrs[i]} Площадь равна {Figure.ars[i]}");
+                            Console.WriteLine($"{Figure.coordes[i]}");
                         }
                         flag = false;
-                        Console.WriteLine("Вы вышли из программы");
+                        Console.WriteLine("\nВы вышли из программы");
+
                         break;
                 }
             }
-            Console.ReadLine();
         }
     }
 }
